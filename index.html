@@ -1,46 +1,88 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
 
-		<title>reveal.js</title>
+    <title>reveal.js</title>
 
-		<link rel="stylesheet" href="dist/reset.css">
-		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="dist/reset.css" />
+    <link rel="stylesheet" href="dist/reveal.css" />
+    <link rel="stylesheet" href="dist/theme/black.css" id="theme" />
 
-		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>
-					<section>
-						<h1>Array.reduce</h1>
-						<pre><code class="javascript">array.reduce(
+    <!-- Theme used for syntax highlighted code -->
+    <link
+      rel="stylesheet"
+      href="plugin/highlight/monokai.css"
+      id="highlight-theme"
+    />
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <section>
+            <h1>Array.reduce</h1>
+            <pre><code class="javascript">array.reduce(
   (accumulator, value, index, array) => fn, initialValue
 );</code></pre>
-					</section>
-					<section>
-						<h2>Big expectations</h2>
-						<img src="./trond.jpeg" />
-					</section>
-				</section>
-				<section>
-					<h2>Combining values</h2>
-<pre><code class="javascript">const sum = (arr) => arr.reduce((acc, next) => {
-  acc += next;
-  return acc;
+          </section>
+          <section>
+            <h2>Big expectations</h2>
+            <img src="./trond.jpeg" />
+          </section>
+          <section>
+            <h2>Big expectations</h2>
+            <img src="./tor.png" />
+          </section>
+          <section>
+            <h2>What is FP?</h2>
+            <ol>
+              <li>Pure functions</li>
+              <li>No side effects</li>
+              <li>Immutability</li>
+              <li>State???</li>
+            </ol>
+          </section>
+          <section>
+            <h2>The accumulator</h2>
+            <img src="./accumulator.jpeg" />
+            <p>The superpower of array.reduce</p>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2>Combining values</h2>
+            <pre><code class="javascript">const sum = (arr) => arr.reduce((acc, next) => {
+	acc += next;
+	return acc;
 }, 0);
-
+	  
 console.log(sum([1, 2, 3])); // 6</code></pre>
-				</section>
-				<section>
-					<section>
-						<h2>Polyfill (simple)</h2>
-						<pre><code class="javascript">function reduce (array, reduceFn, acc){
+          </section>
+          <section>
+            <h2>Bit flags</h2>
+            <pre><code class="javascript">const uiOptions = {
+	NO_FULLSCREEN: 1, // Hide fullscreen button
+	NO_VOLUME_CONTROL: 2, // Hide volume control bar
+	NO_MUTE: 4, // Hide mute button
+	// ++
+};
+['NO_FULLSCREEN', 'NO_MUTE']
+	.map((o) => uiOptions[o])
+	.reduce((accumulator, currentValue) => {
+		return accumulator + currentValue;
+	}, 0);
+// == 5 eller 0b101</code></pre>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2>Polyfill</h2>
+            <pre><code class="javascript">function reduce (array, reduceFn, acc){
   for(let i = 0; i < array.length; i++){
     acc = reduceFn(acc, array[i], i, array);
   }
@@ -52,10 +94,10 @@ console.log(reduce([1,2,3], (acc, elem) => {
   return acc;
 }, 0)); // 6
 </code></pre>
-					</section>
-					<section>
-						<h2>Polyfill (simple)</h2>
-						<pre><code class="javascript">function reduceRight (array, reduceFn, acc){
+          </section>
+          <section>
+            <h2>Polyfill (reversed)</h2>
+            <pre><code class="javascript">function reduceRight (array, reduceFn, acc){
   for(let i = array.length - 1; i > -1; i--){
     acc = reduceFn(acc, array[i], i, array);
   }
@@ -67,19 +109,36 @@ console.log(reduceRight("123", (acc, elem) => {
   return acc;
 }, "")); // 321
 </code></pre>
-					</section>
-					<section>
-						<h2>universially supported</h2>
-						<img src="./browsersupport.jpeg" />
-					</section>
-				</section>
-				<section>
-					<h2>Typical use cases</h2>
-				</section>
-				<section>
-					<section>
-						<h2>Array to object</h2>
-						<pre>
+          </section>
+		  <section>
+			<h2>Go (1.18/generics)</h2>
+			<pre><code class="golang">func reduce[T, M any](s []T, f func(M, T) M, initValue M) M {
+  acc := initValue
+  for _, v := range s {
+	  acc = f(acc, v)
+  }
+  return acc
+}
+
+numbers := []int{1, 2, 3}
+sum := reduce(numbers, func(acc, current int) int {
+	return acc + current
+}, 0)
+fmt.Println(sum) // 6
+</code></pre>
+		</section>
+		<section>
+            <h2>JS universially supported</h2>
+            <img src="./browsersupport.jpeg" />
+          </section>
+        </section>
+        <section>
+          <h2>Typical use cases</h2>
+        </section>
+        <section>
+          <section>
+            <h2>Array to object</h2>
+            <pre>
 							
 <code class="javascript">const groupBy = (arr, key) => arr.reduce((acc, next) => {
   acc[next[key]] = next;
@@ -95,10 +154,10 @@ console.log(groupBy([
 //   nb_NO: { id:"nb_NO", str: "hei" },
 // }</code>
 						</pre>
-					</section>
-					<section>
-						<h2>Map (object)</h2>
-<pre><code class="javascript">const map = (obj, fn) => Object.keys(obj)
+          </section>
+          <section>
+            <h2>Map (object)</h2>
+            <pre><code class="javascript">const map = (obj, fn) => Object.keys(obj)
   .reduce((acc, key) => {
     acc[key] = fn(obj[key]);
     return acc;
@@ -115,10 +174,10 @@ console.log(map({
 //   en_US: { str: "Hello" },
 //   nb_NO: { str: "Hei" },
 // }</code></pre>
-				</section>
-				<section>
-					<h2>Filter (object)</h2>
-<pre><code class="javascript">const filter = (obj, fn) => Object.keys(obj)
+          </section>
+          <section>
+            <h2>Filter (object)</h2>
+            <pre><code class="javascript">const filter = (obj, fn) => Object.keys(obj)
   .reduce((acc, key) => {
     if(fn(key, obj[key])){
       acc[key] = obj[key];
@@ -133,64 +192,68 @@ console.log(filter({
 // {
 //   nb_NO: { str: "Hei" },
 // }</code></pre>
-					</section>
-				</section>
-				<section>
-					<h2>Other usages</h2>
-				</section>
-				<section>
-					<section>
-						<h2>redux reducers</h2>
-						<pre><code class="javascript">function userReducer(state = initialState, action){
-  // state === accumulator
-  // action === next
-  switch(type.action) {
+          </section>
+        </section>
+        <section>
+          <h2>Other usages</h2>
+        </section>
+        <section>
+          <section>
+            <h2>Redux</h2>
+            <pre><code class="javascript">function userReducer(state = initialState, action){
+  // state === accumulator, action === next
+  switch(action.type) {
     case "USER_FETCHED":
-      return { ...state, action.user };
+      return {
+		  ...state,
+		  count: state.count + 1,
+		  user: action.user
+    };
     default:
       return state;
   }
   return state;
-}</code></pre>
-					</section>
-					<section>
-						<h2>Sequential promises</h2>
-						<pre><code class="javascript">const promiseQueue = (taskArr) =>
+}
+var state = { count: 0 };
+var state = userReducer(state, {
+	type: "USER_FETCHED",
+	user: { id: 123, name: "hei verden" },
+});</code></pre>
+          </section>
+          <section>
+            <h2>Sequential promises</h2>
+            <pre><code class="javascript">const promiseQueue = (taskArr) =>
   taskArr.reduce(
     (previous, next) => previous.then(next),
     Promise.resolve()
   );
 
-  const p = (delay, str) => () => new Promise(resolve => {
-    setTimeout(() => {
-      console.log(str);
-      resolve();
-    }, delay);
-  });
+const wait = (delay, str) => () => new Promise(resolve => {
+	setTimeout(() => {
+		console.log(str);
+		resolve();
+	}, delay);
+});
 
-  promiseQueue([ p(2000, "first"), p(500, "second") ]);
+wait(2000, "first")();
+wait(500, "second")();
 
-  // first - after 2 seconds
-  // second - after 2.5 seconds</code></pre>
-					</section>
-				</section>
-				<section>
-					<h2>Advanced usage</h2>
-				</section>
-				<section>
-					<section>
-						<h2>Composition</h2>
-						<pre><code class="javascript">// async
-const add = (x) => Promise.resolve(x + x);
-const square = (x) => Promise.resolve(x * x);
+promiseQueue([
+	wait(2000, "first"),
+	wait(500, "second"),
+]);
 
-square(10)
-  .then((result) => add(result))
-  .then(console.log); // 200</code></pre>
-					</section>
-					<section>
-						<h2>Composition</h2>
-						<pre><code class="javascript">// sync
+// first - after 2 seconds
+// second - after 2.5 seconds</code></pre>
+          </section>
+        </section>
+        <section>
+          <h2>Advanced usage</h2>
+        </section>
+        <section>
+          <section>
+            <h2>Composition</h2>
+            <pre><code class="javascript">// sync
 const add = (x) => x + x;
 const square = (x) => x * x;
 
@@ -199,10 +262,10 @@ console.log(add(result)); // 200
 
 // or just
 // add(square(10)); // 200</code></pre>
-					</section>
-					<section>
-						<h2>Composition</h2>
-						<pre><code class="javascript">const add = (x) => x + x;
+          </section>
+          <section>
+            <h2>Composition</h2>
+            <pre><code class="javascript">const add = (x) => x + x;
 const square = (x) => x * x;
 							
 const compose = (...fns) => {
@@ -216,10 +279,10 @@ const compose = (...fns) => {
 compose(add, square)(10); // 200
 // same as
 // add(square(10))</code></pre>
-					</section>
-					<section>
-						<h2>Composition</h2>
-						<pre><code class="javascript">const add = (x) => x + x;
+          </section>
+          <section>
+            <h2>Composition</h2>
+            <pre><code class="javascript">const add = (x) => x + x;
 const square = (x) => x * x;
 							
 // compressed
@@ -229,12 +292,29 @@ const compose = (...fns) =>
 compose(add, square)(10); // 200
 // same as
 // add(square(10))</code></pre>
-					</section>
-				</section>
-				<section>
-					<section>
-						<h2>Pipe</h2>
-						<pre><code class="javascript">const add = (x) => x + x;
+          </section>
+		  <section>
+			<h2>Why!?!?</h2>
+			<ul>
+				<li>Partial application / currying</li>
+				<li>Lazy evaluation</li>
+				<li>Plugin architecture</li>
+			</ul>
+			<pre><code class="javascript">const calulationChain = compose(add, square);
+
+createApplication(calulationChain);
+
+function createApplication(onRender) {
+    // ... get input from user, eg. `10`
+	const renderResult = onRender(userInput);
+}</code></pre>
+			</code></pre>
+		</section>
+        </section>
+        <section>
+          <section>
+            <h2>Pipe</h2>
+            <pre><code class="javascript">const add = (x) => x + x;
 const square = (x) => x * x;
 	
 // Reversed order of arguments
@@ -244,10 +324,10 @@ const pipe = (...fns) =>
 pipe(square, add)(10); // 200
 // same as
 // add(square(10))</code></pre>
-					</section>
-					<section>
-						<h2>Async Pipe</h2>
-						<pre><code class="javascript">const add = (x) =>
+          </section>
+          <section>
+            <h2>Async Pipe</h2>
+            <pre><code class="javascript">const add = (x) =>
   new Promise((r) => setTimeout(() => r(x + x), 2000));
 const square = (x) =>
   new Promise((r) => setTimeout(() => r(x * x), 500));
@@ -259,21 +339,21 @@ const asyncPipe = (...fns) =>
 	
 asyncPipe(square, add)(10)
   .then(console.log); // 200 after 2.5s</code></pre>
-					</section>
-				</section>
-				<section>
-					<section>
-						<h2>Middlewares</h2>
-						<pre><code class="javascript">const myApp = new App();
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2>Middlewares</h2>
+            <pre><code class="javascript">const myApp = new App();
 
 app.use(authentication);
 app.get("/user", displayUser);
 
 app.listen("1234"); // start server</code></pre>
-					</section>
-					<section>
-						<h2>Callbacks</h2>
-						<pre><code class="javascript">async function authentication({ request, response }) {
+          </section>
+          <section>
+            <h2>Callbacks</h2>
+            <pre><code class="javascript">async function authentication({ request, response }) {
   const user = await getUser(request); // cookie lookup ?
   return {
     request: { ...request, user },
@@ -288,10 +368,10 @@ app.listen("1234"); // start server</code></pre>
     &lt;/body>
   &lt/html>`);
 }</code></pre>
-					</section>
-					<section>
-						<h2>Dummy implementation</h2>
-						<pre><code class="javascript">class App {
+          </section>
+          <section>
+            <h2>Dummy implementation</h2>
+            <pre><code class="javascript">class App {
   #middlewares = [];
   #routes = {};
 
@@ -316,23 +396,61 @@ app.listen("1234"); // start server</code></pre>
     )({ request, response });
   }
 }</code></pre>
-					</section>
-				</section>
-				<section>
-					<h2>One more thing?</h2>
-				</section>
-				<section>
-					<section>
-						<h2>Yes - transducers</h2>
-						<ul>
-							<li>Single loop with multiple reducers</li>
-							<li>Composing reducers with currying</li>
-							<li>Multiple iterable data formats (arrays, observables, streams, trees)</li>
-						</ul>
-					</section>
-					<section>
-						<h2>Ramda lib</h2>
-						<pre><code class="javascript">import { map, filter, compose, transduce } from "ramda";
+          </section>
+        </section>
+        <section>
+          <h2>One more thing?</h2>
+        </section>
+        <section>
+          <section>
+            <h2>Yes - transducers</h2>
+            <ul>
+              <li>Process each array element only once</li>
+              <li>
+                Multiple iterable data formats (arrays, streams, trees)
+              </li>
+			  <li>Efficient for large (or unlimited) data sets</li>
+            </ul>
+          </section>
+		  <section>
+			  <h2>Signal processing</h2>
+			  <img src="transducer.gif" style="background-color: #fff"/>
+		  </section>
+		  <section>
+			  <h2>Higher order reducers</h2>
+			  <pre><code class="javascript">const map = f => step => (a, c) => step(a, f(c));
+const filter = predicate => step => (a, c) => predicate(c) ? step(a, c) : a;
+
+const compose = (...fns) => (value) => fns.reduceRight((acc, fn) => fn(acc), value);
+
+const pipeline = compose(
+	map((obj) => ({
+		...obj,
+		str: `${obj.str[0].toUpperCase()}${obj.str.slice(1)}`,
+	})),
+	filter((obj) => obj.id !== "en_US")
+);
+
+// import a standard curry, or use this magic spell:
+const curry = (f, arr = []) => (...args) => (a => a.length === f.length ? f(...a) : curry(f, a))([...arr, ...args]);
+
+const transduce = curry((step, initial, xform, foldable) => foldable.reduce(xform(step), initial));
+
+const concatArray = (a, c) => a.concat([c]);
+const toArray = transduce(concatArray, []);
+
+toArray(pipeline, [{ id: "en_US", str: "hello" }, { id: "nb_NO", str: "hei" }]);
+</code></pre>
+			  </code></pre>
+		  </section>
+		  <section>
+			  <h2>processing</h2>
+			<img src="./transducer1.gif" />
+			<img src="./transducer2.gif" />
+		  </section>
+          <section>
+            <h2>Ramda lib <a href="https://ramdajs.com/repl/#?%2F%2F%20import%20%7B%20map%2C%20filter%2C%20compose%2C%20transduce%20%7D%20from%20%22ramda%22%3B%0A%0Aconst%20input%20%3D%20%5B%0A%20%20%7B%20id%3A%20%22en_US%22%2C%20str%3A%20%22hello%22%20%7D%2C%20%7B%20id%3A%20%22nb_NO%22%2C%20str%3A%20%22hei%22%20%7D%0A%5D%3B%0A%0Aconst%20filterAndMap%20%3D%20compose%28%0A%20%20filter%28%28obj%29%20%3D%3E%20obj.id%20%21%3D%3D%20%22en_US%22%29%2C%0A%20%20map%28%28obj%29%20%3D%3E%20%28%7B%0A%20%20%20%20...obj%2C%0A%20%20%20%20str%3A%20%60%24%7Bobj.str%5B0%5D.toUpperCase%28%29%7D%24%7Bobj.str.slice%281%29%7D%60%2C%0A%20%20%7D%29%29%0A%29%3B%0A%0Aconst%20grpBy%20%3D%20%28acc%2C%20next%29%20%3D%3E%20%28%7B%0A%20%20...acc%2C%0A%20%20%5Bnext.id%5D%3A%20next%2C%0A%7D%29%3B%0A%20%0A%0Aconst%20results%20%3D%20transduce%28%0A%20%20filterAndMap%2C%20%2F%2F%20Transducer%20function%20%28order%20reversed%29%0A%20%20grpBy%2C%20%20%20%20%20%20%2F%2F%20Final%20reducer%0A%2F%2F%20%20%7B%7D%2C%20%20%20%20%20%20%20%20%20%20%20%2F%2F%20Initial%20reducer%20value%0A%2F%2F%20%20input%20%20%20%20%20%20%20%20%20%2F%2F%20Array%20to%20be%20processed%0A%29%3B%0A%0A%2F%2Fconsole.log%28results%29%3B%0Aresults%28%7B%7D%29%28input%29%0A">.</a></h2>
+            <pre><code class="javascript">import { map, filter, compose, transduce } from "ramda";
 
 const input = [
   { id: "en_US", str: "hello" }, { id: "nb_NO", str: "hei" }
@@ -360,20 +478,124 @@ const results = transduce(
 
 console.log(results);
 // { nb_NO: { id: "nb_NO", str: "Hei" } }</code></pre>
-					</section>
-				</section>
-				<section>
-					<h2>Resources</h2>
-					<small>
-						<ul>
-							<li><a href="https://medium.com/free-code-camp/10-ways-to-write-pipe-compose-in-javascript-f6d54c575616">https://medium.com/free-code-camp/10-ways-to-write-pipe-compose-in-javascript-f6d54c575616</a></li>
-							<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce</a></li>
-							<li><a href="https://jrsinclair.com/articles/2019/magical-mystical-js-transducers/">https://jrsinclair.com/articles/2019/magical-mystical-js-transducers/</a></li>
-							<li><a href="https://medium.com/javascript-scene/transducers-efficient-data-processing-pipelines-in-javascript-7985330fe73d">https://medium.com/javascript-scene/transducers-efficient-data-processing-pipelines-in-javascript-7985330fe73d</a></li>
-						</ul>
-					</small>
-				</section>
-				<!--
+          </section>
+		  <section>
+			  <h2>Too much low level?</h2>
+			  <p>
+			    🤯🤯...buffer overflow..🤯🤯
+			  </p>
+		  </section>
+		</section>
+		<section>
+          <section>
+			<h2>Observables</h2>
+			<ul>
+				<li>TC39 - stage 1 proposal</li>
+				<li>Basically a transducer with some helper methods</li>
+				<li>Hot (push) vs cold (pull) observables</li>
+				<li>Marble diagrams</li>
+				<li>Userland implementation - ReactiveX (RxJs, RxJava, Rx.NET, RxGo, RxPy, ++)</li>
+			</ul>
+		  </section>
+		  <section>
+			<h2>rxjs - cold observable</h2>
+			<pre><code class="javascript">import { from, map, filter, groupBy } from "rxjs";
+const input = [
+	{ id: "en_US", str: "hello" }, { id: "nb_NO", str: "hei" }
+];
+// Cold observable (push)
+from(input).pipe(
+	filter((obj) => obj.id !== "en_US"),
+	map((obj) => ({
+		...obj,
+		str: `${obj.str[0].toUpperCase()}${obj.str.slice(1)}`,
+	})),
+	groupBy((obj) => obj.id),
+).subscribe(console.log);
+// { nb_NO: { id: "nb_NO", str: "Hei" } }</code></pre>
+  		  </section>
+		<section>
+		  <h2>rxjs - hot observable</h2>
+			<pre><code class="javascript">import { Observable, interval } from 'rxjs';
+
+const observable$ = new Observable((observer) => {
+	// interval(period: number = 0, ...args)
+	const interval$ = interval(1000);
+	// hot observable (pull)
+	interval$.subscribe((value) => observer.next(value));
+});
+
+observable$.subscribe((value) => {
+	console.log(value); // 1, 2, 3, ... every 1000ms
+});</code></pre>
+  		  </section>
+		  <section>
+			<h2>Marble diagrams</h2>
+			<img align="left" style="padding:5px; width:calc(50% - 10px)" src="./interval.png" />
+			<img align="left" style="padding:5px; width:calc(50% - 10px)" src="./debounceTime.png" />
+			<img align="left" style="padding:5px; width:calc(50% - 10px)" src="./filter.png" />
+			<img align="left" style="padding:5px; width:calc(50% - 10px)" src="./map.png" />
+		  </section>
+        </section>
+		<section>
+			<h2>Conclusion</h2>
+			<ul>
+				<li>imperative - vs - declarative</li>
+				<li>readability - vs - configurability</li>
+				<li>versatility (plugin architecture)</li>
+				<li>backpressure/buffer requirements (hot/cold observables)</li>
+			</ul>
+			<p>
+				<strong>🪄🪄 Choose wisely 🪄🪄</strong>
+			</p>
+		</section>
+		<section>
+			<img src="tor.png" />
+		</section>
+        <section>
+          <h2>Resources</h2>
+          <small>
+            <ul>
+              <li>
+                <a
+                  href="https://medium.com/free-code-camp/10-ways-to-write-pipe-compose-in-javascript-f6d54c575616"
+                  >https://medium.com/free-code-camp/10-ways-to-write-pipe-compose-in-javascript-f6d54c575616</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce"
+                  >https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce</a
+                >
+              </li>
+			  <li>
+				  <a href="https://dev.to/romanliutikov/understanding-transducers-in-javascript-4pdg">https://dev.to/romanliutikov/understanding-transducers-in-javascript-4pdg</a>
+			  </li>
+              <li>
+                <a
+                  href="https://jrsinclair.com/articles/2019/magical-mystical-js-transducers/"
+                  >https://jrsinclair.com/articles/2019/magical-mystical-js-transducers/</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://medium.com/javascript-scene/transducers-efficient-data-processing-pipelines-in-javascript-7985330fe73d"
+                  >https://medium.com/javascript-scene/transducers-efficient-data-processing-pipelines-in-javascript-7985330fe73d</a
+                >
+              </li>
+			  <li>
+				  <a href="http://elbenshira.com/blog/understanding-transducers/">http://elbenshira.com/blog/understanding-transducers/</a>
+			  </li>
+			  <li>
+				  <a href="https://tc39.es/proposal-observable/">https://tc39.es/proposal-observable/</a>
+			  </li>
+			  <li>
+				  <a href="https://reactivex.io/">https://reactivex.io/</a>
+			  </li>
+            </ul>
+          </small>
+        </section>
+        <!--
 				<section>
 					<h2>title</h2>
 					<pre>
@@ -383,23 +605,23 @@ console.log(results);
 					</pre>
 				</section>
 				-->
-			</div>
-		</div>
+      </div>
+    </div>
 
-		<script src="dist/reveal.js"></script>
-		<script src="plugin/notes/notes.js"></script>
-		<script src="plugin/markdown/markdown.js"></script>
-		<script src="plugin/highlight/highlight.js"></script>
-		<script>
-			// More info about initialization & config:
-			// - https://revealjs.com/initialization/
-			// - https://revealjs.com/config/
-			Reveal.initialize({
-				hash: true,
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+        hash: true,
 
-				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
-			});
-		</script>
-	</body>
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+      });
+    </script>
+  </body>
 </html>
